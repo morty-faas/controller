@@ -8,7 +8,7 @@
 		<version>3.0.2</version>
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
-	<groupId>rik.faas</groupId>
+	<groupId>polyxia.faas</groupId>
 	<artifactId>gateway</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>gateway</name>

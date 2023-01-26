@@ -1,4 +1,4 @@
-package rik.faas.gateway;
+package polyxia.faas.gateway;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

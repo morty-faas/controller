@@ -1,4 +1,4 @@
-package rik.faas.gateway;
+package polyxia.faas.gateway;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
