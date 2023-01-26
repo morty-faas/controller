@@ -72,7 +72,7 @@ esac
 
 if [ -z "$JAVA_HOME" ] ; then
   if [ -r /etc/gentoo-release ] ; then
-    JAVA_HOME=`java-config --jre-home`
+    JAVA_HOME=`kotlin-config --jre-home`
   fi
 fi
 
@@ -149,7 +149,7 @@ if [ -z "$JAVACMD" ] ; then
       JAVACMD="$JAVA_HOME/bin/java"
     fi
   else
-    JAVACMD="`\\unset -f command; \\command -v java`"
+    JAVACMD="`\\unset -f command; \\command -v kotlin`"
   fi
 fi
 
@@ -288,7 +288,7 @@ if [ "$MVNW_VERBOSE" = true ]; then
 fi
 MAVEN_OPTS="$(concat_lines "$MAVEN_PROJECTBASEDIR/.mvn/jvm.config") $MAVEN_OPTS"
 
-# For Cygwin, switch paths to Windows format before running java
+# For Cygwin, switch paths to Windows format before running kotlin
 if $cygwin; then
   [ -n "$M2_HOME" ] &&
     M2_HOME=`cygpath --path --windows "$M2_HOME"`
