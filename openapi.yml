@@ -1,0 +1,84 @@
+openapi: 3.0.0
+info:
+  title: Morty Gateway
+  version: 1.0.0
+paths:
+  /functions:
+    post:
+      summary: New function
+      description: Ask to the system to register a new function
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Function'
+      responses:
+        '200':
+          description: Function registered
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Function'
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BaseErrorMessage'
+        '409':
+            description: Conflict
+            content:
+              application/json:
+                schema:
+                  $ref: '#/components/schemas/BaseErrorMessage'
+  /invoke/{functionName]:
+    get:
+      summary: Invoke function
+      description: Ask to the system to invoke a function
+      parameters:
+        - in: path
+          name: functionName
+          required: true
+          schema:
+            type: string
+          description: The name of the function to invoke
+      responses:
+        '200':
+          description: Function invoked
+          content:
+            application/json:
+              schema:
+                type: string
+                description: Payload returned by the function
+        '404':
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BaseErrorMessage'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BaseErrorMessage'
+
+components:
+    schemas:
+      Function:
+        type: object
+        properties:
+          name:
+            description: A unique name to your function
+            type: string
+          rootfs:
+            description: A remote RootFS that should be available remotely
+            type: string
+      BaseErrorMessage:
+        type: object
+        properties:
+          message:
+            example: Function name is already in use
+            description: Descriptive message of your error
+            type: string
