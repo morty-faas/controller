@@ -1,0 +1,34 @@
+name: GO CI
+on:
+  pull_request:
+    branches:
+      - main
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-22.04
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Set up Go 1.20
+        uses: actions/setup-go@v3
+        with:
+          go-version: "1.20"
+
+      - name: Build
+        run: go build -v -o gateway *.go
+
+      - name: Test
+        run: go test -v
+
+  release-drafter:
+    needs: build
+    runs-on: ubuntu-22.04
+    steps:
+      - name: Release Drafter
+        uses: release-drafter/release-drafter@v5
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
