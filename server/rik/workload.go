@@ -20,7 +20,7 @@ type createWorkloadResponse struct {
 }
 
 type workload struct {
-	ApiVersion string       `json:"api_version"`
+	ApiVersion string       `json:"apiVersion"`
 	Kind       string       `json:"kind"`
 	Name       string       `json:"name"`
 	Spec       workloadSpec `json:"spec"`
