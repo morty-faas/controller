@@ -172,7 +172,7 @@ func (server *Server) invokeFunctionHandler(c *gin.Context) {
 	if err != nil {
 		l.WithError(err).Error("Could not invoke function")
 		c.JSON(500, gin.H{
-			"message": "We cannot serve right now",
+			"message": err.Error(),
 		})
 		return
 	}

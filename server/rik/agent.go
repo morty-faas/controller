@@ -2,11 +2,17 @@ package rik
 
 import (
 	"encoding/json"
+	"errors"
 	"io"
 	"net/http"
 	"net/url"
+	"time"
 
 	"github.com/sirupsen/logrus"
+)
+
+var (
+	ErrFunctionUnhealthy = errors.New("unable to invoke function: one or more instances can't be marked as ready")
 )
 
 type AgentClient struct {
@@ -28,6 +34,27 @@ func NewAgentClient(l *logrus.Entry, baseUrl *url.URL) *AgentClient {
 func (agent *AgentClient) InvokeFunction(functionName string) (FunctionResponse, error) {
 	l := agent.l.WithField("functionName", functionName)
 	l.Debug("Invoke function")
+
+	url := agent.baseUrl.String()
+
+	// Perform healthcheck against the Alpha agent
+	// If alpha doesn't anwser to our requests, it probably that
+	// the VM isn't ready yet to receive our requests.
+	const maxHealthcheckRetries = 10
+	healthcheck := url + "/_/health"
+	for i := 0; i < maxHealthcheckRetries; i++ {
+		l.Debugf("Performing healthcheck request on Alpha: %s", healthcheck)
+		if _, err := agent.c.Get(healthcheck); err != nil {
+			if i == maxHealthcheckRetries-1 {
+				l.Errorf("failed to perform healthcheck on Alpha: %v", err)
+				return FunctionResponse{}, ErrFunctionUnhealthy
+			}
+			time.Sleep(100 * time.Millisecond)
+			continue
+		}
+		l.Infof("Function '%s' is healthy and ready to receive requests", functionName)
+		break
+	}
 
 	res, err := agent.c.Get(agent.baseUrl.String())
 	var functionResponse FunctionResponse
