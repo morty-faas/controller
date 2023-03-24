@@ -9,7 +9,7 @@ type FunctionRequest struct {
 // This is typically served by a runtime of RIK
 type FunctionResponse struct {
 	// Considered as string as we don't do anything to this field, we'll just return it
-	Payload string `json:"payload"`
+	Payload any `json:"payload"`
 	// ProcessMetadata contains metadata about the function execution
 	ProcessMetadata functionProcessMetadata `json:"process_metadata"`
 }

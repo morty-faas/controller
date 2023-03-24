@@ -93,8 +93,8 @@ type Spec struct {
 	Function   Function `json:"function"`
 }
 
-func (i *Instance) GetRuntimeUrl() *url.URL {
-	urlStr := fmt.Sprintf("http://%s:%d", "127.0.0.1", i.Spec.Function.Exposure.Port)
+func (i *Instance) GetRuntimeUrl(nodeIp string) *url.URL {
+	urlStr := fmt.Sprintf("http://%s:%d", nodeIp, i.Spec.Function.Exposure.Port)
 	fullUrl, _ := url.Parse(urlStr)
 	return fullUrl
 }

@@ -2,14 +2,15 @@ package server
 
 import (
 	"fmt"
+	"math/rand"
+	"os"
+	"time"
+
 	"github.com/gin-gonic/gin"
 	"github.com/polyxia-org/morty-gateway/config"
 	"github.com/polyxia-org/morty-gateway/server/rik"
 	"github.com/sirupsen/logrus"
-	"github.com/toorop/gin-logrus"
-	"math/rand"
-	"os"
-	"time"
+	ginlogrus "github.com/toorop/gin-logrus"
 )
 
 type Server struct {
@@ -158,7 +159,13 @@ func (server *Server) invokeFunctionHandler(c *gin.Context) {
 	randomIndex := rand.Intn(len(instances))
 	instance := instances[randomIndex]
 
-	agent := rik.NewAgentClient(server.l, instance.GetRuntimeUrl())
+	// Currently, we consider that the underlying orchestrator, RIK, runs its entire stack on the same
+	// machine. Once RIK Controller will be able to dynamically return the worker node IP, we will need to
+	// update this line of code.
+	// See: https://github.com/polyxia-org/polyxia-org/issues/16
+	functionAddr := instance.GetRuntimeUrl(server.config.RIKController.Hostname())
+
+	agent := rik.NewAgentClient(server.l, functionAddr)
 
 	// Forward the request to the function
 	function, err := agent.InvokeFunction(functionName)
