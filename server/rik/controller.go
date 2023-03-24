@@ -4,11 +4,12 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
-	"github.com/polyxia-org/morty-gateway/config"
-	"github.com/sirupsen/logrus"
 	"io"
 	"net/http"
 	"net/url"
+
+	"github.com/polyxia-org/morty-gateway/config"
+	"github.com/sirupsen/logrus"
 )
 
 type ControllerClient struct {

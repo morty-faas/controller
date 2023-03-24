@@ -2,10 +2,11 @@ package rik
 
 import (
 	"encoding/json"
-	"github.com/sirupsen/logrus"
 	"io"
 	"net/http"
 	"net/url"
+
+	"github.com/sirupsen/logrus"
 )
 
 type AgentClient struct {

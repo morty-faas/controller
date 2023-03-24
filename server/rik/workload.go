@@ -2,9 +2,10 @@ package rik
 
 import (
 	"fmt"
-	"github.com/goombaio/namegenerator"
 	"net/url"
 	"time"
+
+	"github.com/goombaio/namegenerator"
 )
 
 type workloadListResponse struct {
