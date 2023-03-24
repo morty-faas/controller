@@ -49,7 +49,7 @@ func (agent *AgentClient) InvokeFunction(functionName string) (FunctionResponse,
 				l.Errorf("failed to perform healthcheck on Alpha: %v", err)
 				return FunctionResponse{}, ErrFunctionUnhealthy
 			}
-			time.Sleep(100 * time.Millisecond)
+			time.Sleep(1 * time.Second)
 			continue
 		}
 		l.Infof("Function '%s' is healthy and ready to receive requests", functionName)
