@@ -2,16 +2,15 @@ package server
 
 import (
 	"fmt"
-	"math/rand"
-	"os"
-	"time"
-
 	"github.com/gin-gonic/gin"
 	"github.com/gin-gonic/gin/render"
 	"github.com/polyxia-org/morty-gateway/config"
 	"github.com/polyxia-org/morty-gateway/server/rik"
 	"github.com/sirupsen/logrus"
 	ginlogrus "github.com/toorop/gin-logrus"
+	"math/rand"
+	"os"
+	"time"
 )
 
 type Server struct {
@@ -166,7 +165,7 @@ func (server *Server) invokeFunctionHandler(c *gin.Context) {
 	agent := rik.NewAgentClient(server.l, functionAddr)
 
 	// Forward the request to the function
-	function, err := agent.InvokeFunction(c.Request.Method, functionName)
+	function, err := agent.InvokeFunction(c.Request.Method, functionName, c.Request.URL.RawQuery)
 	if err != nil {
 		l.WithError(err).Error("Could not invoke function")
 		c.JSON(500, gin.H{

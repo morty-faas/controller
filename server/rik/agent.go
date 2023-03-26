@@ -3,6 +3,7 @@ package rik
 import (
 	"encoding/json"
 	"errors"
+	"fmt"
 	"io"
 	"net/http"
 	"net/url"
@@ -31,7 +32,7 @@ func NewAgentClient(l *logrus.Entry, baseUrl *url.URL) *AgentClient {
 	}
 }
 
-func (agent *AgentClient) InvokeFunction(method string, functionName string) (FunctionResponse, error) {
+func (agent *AgentClient) InvokeFunction(method string, functionName string, params string) (FunctionResponse, error) {
 	l := agent.l.WithField("functionName", functionName)
 	l.Debug("Invoke function")
 
@@ -55,7 +56,10 @@ func (agent *AgentClient) InvokeFunction(method string, functionName string) (Fu
 		l.Infof("Function '%s' is healthy and ready to receive requests", functionName)
 		break
 	}
-	req, _ := http.NewRequest(method, agent.baseUrl.String(), nil)
+	if params != "" {
+		url += fmt.Sprintf("?%s", params)
+	}
+	req, _ := http.NewRequest(method, url, nil)
 	res, err := agent.c.Do(req)
 	var functionResponse FunctionResponse
 	agent.l.WithField("response", res).Debug("Response from function")
