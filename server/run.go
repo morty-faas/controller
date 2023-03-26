@@ -7,6 +7,7 @@ import (
 	"time"
 
 	"github.com/gin-gonic/gin"
+	"github.com/gin-gonic/gin/render"
 	"github.com/polyxia-org/morty-gateway/config"
 	"github.com/polyxia-org/morty-gateway/server/rik"
 	"github.com/sirupsen/logrus"
@@ -178,5 +179,14 @@ func (server *Server) invokeFunctionHandler(c *gin.Context) {
 	}
 
 	// TODO: Handle the response code, will always give 200 for now
+
+	// If the function payload is a string, return it as text
+	if value, ok := function.Payload.(string); ok {
+		c.Render(200, render.Data{
+			Data: []byte(value),
+		})
+		return
+	}
+
 	c.JSON(200, function.Payload)
 }
