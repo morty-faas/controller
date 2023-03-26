@@ -1,16 +1,22 @@
 package server
 
 import (
+	"bytes"
+	"encoding/json"
 	"fmt"
+	"io"
+	"math/rand"
+	"net/http"
+	"net/http/httputil"
+	"os"
+	"strconv"
+	"time"
+
 	"github.com/gin-gonic/gin"
-	"github.com/gin-gonic/gin/render"
 	"github.com/polyxia-org/morty-gateway/config"
 	"github.com/polyxia-org/morty-gateway/server/rik"
 	"github.com/sirupsen/logrus"
 	ginlogrus "github.com/toorop/gin-logrus"
-	"math/rand"
-	"os"
-	"time"
 )
 
 type Server struct {
@@ -162,27 +168,67 @@ func (server *Server) invokeFunctionHandler(c *gin.Context) {
 	// See: https://github.com/polyxia-org/polyxia-org/issues/16
 	functionAddr := instance.GetRuntimeUrl(server.config.RIKController.Hostname())
 
-	agent := rik.NewAgentClient(server.l, functionAddr)
+	proxy := httputil.NewSingleHostReverseProxy(functionAddr)
 
-	// Forward the request to the function
-	function, err := agent.InvokeFunction(c.Request.Method, functionName, c.Request.URL.RawQuery)
-	if err != nil {
-		l.WithError(err).Error("Could not invoke function")
-		c.JSON(500, gin.H{
-			"message": err.Error(),
-		})
-		return
+	// Modify the response so we can extract from the Alpha
+	// response the payload to return it to the caller.
+	proxy.ModifyResponse = func(r *http.Response) error {
+		var functionResponse rik.FunctionResponse
+
+		by, err := io.ReadAll(r.Body)
+		if err != nil {
+			l.WithError(err).Error("Could not read response body")
+			return err
+		}
+		defer r.Body.Close()
+
+		if err := json.Unmarshal(by, &functionResponse); err != nil {
+			l.WithError(err).Error("Could not unmarshal response body")
+			return err
+		}
+
+		var responseBytes []byte
+
+		// If the function payload is a string, return it as text
+		if value, ok := functionResponse.Payload.(string); ok {
+			responseBytes = []byte(value)
+		} else {
+			responseBytes, err = json.Marshal(functionResponse.Payload)
+			if err != nil {
+				return err
+			}
+		}
+
+		contentLength := len(responseBytes)
+		r.Body = io.NopCloser(bytes.NewReader(responseBytes))
+		r.ContentLength = int64(contentLength)
+		r.Header.Set("Content-Length", strconv.Itoa(contentLength))
+
+		return nil
 	}
 
-	// TODO: Handle the response code, will always give 200 for now
-
-	// If the function payload is a string, return it as text
-	if value, ok := function.Payload.(string); ok {
-		c.Render(200, render.Data{
-			Data: []byte(value),
-		})
-		return
+	// Perform healthcheck against the Alpha agent
+	// If alpha doesn't anwser to our requests, it probably that
+	// the VM isn't ready yet to receive our requests.
+	const maxHealthcheckRetries = 10
+	healthcheck := functionAddr.String() + "/_/health"
+	for i := 0; i < maxHealthcheckRetries; i++ {
+		l.Debugf("Performing healthcheck request on Alpha: %s", healthcheck)
+		if _, err := http.Get(healthcheck); err != nil {
+			if i == maxHealthcheckRetries-1 {
+				l.Errorf("failed to perform healthcheck on Alpha: %v", err)
+				c.JSON(http.StatusServiceUnavailable, gin.H{
+					"status":  "OUT_OF_SERVICE",
+					"message": "One or more instances of the function can't be marked as ready",
+				})
+				return
+			}
+			time.Sleep(1 * time.Second)
+			continue
+		}
+		l.Infof("Function '%s' is healthy and ready to receive requests", functionName)
+		break
 	}
 
-	c.JSON(200, function.Payload)
+	proxy.ServeHTTP(c.Writer, c.Request)
 }
