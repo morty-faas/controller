@@ -31,7 +31,7 @@ func NewAgentClient(l *logrus.Entry, baseUrl *url.URL) *AgentClient {
 	}
 }
 
-func (agent *AgentClient) InvokeFunction(functionName string) (FunctionResponse, error) {
+func (agent *AgentClient) InvokeFunction(method string, functionName string) (FunctionResponse, error) {
 	l := agent.l.WithField("functionName", functionName)
 	l.Debug("Invoke function")
 
@@ -55,8 +55,8 @@ func (agent *AgentClient) InvokeFunction(functionName string) (FunctionResponse,
 		l.Infof("Function '%s' is healthy and ready to receive requests", functionName)
 		break
 	}
-
-	res, err := agent.c.Get(agent.baseUrl.String())
+	req, _ := http.NewRequest(method, agent.baseUrl.String(), nil)
+	res, err := agent.c.Do(req)
 	var functionResponse FunctionResponse
 	agent.l.WithField("response", res).Debug("Response from function")
 

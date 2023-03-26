@@ -68,10 +68,7 @@ func (server *Server) Run() {
 	router.POST("/functions", server.createFunctionHandler)
 
 	// Handle all methods to invoke a FunctionRequest
-	router.GET("/invoke/:functionName", server.invokeFunctionHandler)
-	//router.POST("/invoke/:FunctionRequest", invokeHandler)
-	//router.PUT("/invoke/:FunctionRequest", invokeHandler)
-	//router.DELETE("/invoke/:FunctionRequest", invokeHandler)
+	router.Any("/invoke/:functionName", server.invokeFunctionHandler)
 
 	listeningPort := fmt.Sprintf(":%d", server.config.Port)
 	err := router.Run(listeningPort)
@@ -169,7 +166,7 @@ func (server *Server) invokeFunctionHandler(c *gin.Context) {
 	agent := rik.NewAgentClient(server.l, functionAddr)
 
 	// Forward the request to the function
-	function, err := agent.InvokeFunction(functionName)
+	function, err := agent.InvokeFunction(c.Request.Method, functionName)
 	if err != nil {
 		l.WithError(err).Error("Could not invoke function")
 		c.JSON(500, gin.H{
