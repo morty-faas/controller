@@ -42,7 +42,7 @@ func (client ControllerClient) mustFormatUrl(path string) string {
 	return formattedUrl
 }
 
-func (client ControllerClient) GetExistingFunctions() (map[string]string, error) {
+func (client ControllerClient) ListFunctions() (map[string]string, error) {
 	instances := map[string]string{}
 	client.l.Debug("Get existing functions")
 
