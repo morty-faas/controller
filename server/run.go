@@ -2,6 +2,7 @@ package server
 
 import (
 	"bytes"
+	"context"
 	"encoding/json"
 	"fmt"
 	"io"
@@ -16,22 +17,27 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/polyxia-org/morty-gateway/config"
 	"github.com/polyxia-org/morty-gateway/server/rik"
+	"github.com/polyxia-org/morty-gateway/state"
 	"github.com/sirupsen/logrus"
 	ginlogrus "github.com/toorop/gin-logrus"
 )
 
 type Server struct {
-	config config.Config
+	config *config.Config
 	rik.ControllerClient
-	l *logrus.Entry
-
-	// Temporary map a function name to a workload ID
-	functions map[string]string
+	l     *logrus.Entry
+	state state.State
 }
 
-func NewServer(config config.Config) (*Server, error) {
+func NewServer(config *config.Config) (*Server, error) {
 	l := logrus.NewEntry(&logrus.Logger{})
-	controllerClient, err := rik.NewControllerClient(l, config)
+
+	state, err := config.StateFactory()
+	if err != nil {
+		return nil, err
+	}
+
+	controllerClient, err := rik.NewControllerClient(l, *config)
 	if err != nil {
 		return nil, err
 	}
@@ -43,11 +49,16 @@ func NewServer(config config.Config) (*Server, error) {
 		l.WithError(err).Error("Could not load existing function, will start with an empty list")
 	}
 
+	// Try to populate the state with existing functions
+	if errs := state.SetMultiple(context.Background(), functions); errs != nil && len(errs) > 0 {
+		logrus.Warnf("Failed to populate state with existing functions: %v")
+	}
+
 	return &Server{
 		config:           config,
 		ControllerClient: *controllerClient,
 		l:                l,
-		functions:        functions,
+		state:            state,
 	}, nil
 }
 
@@ -113,7 +124,7 @@ func (server *Server) createFunctionHandler(c *gin.Context) {
 		return
 	}
 
-	server.functions[functionBody.Name] = workloadId
+	server.state.Set(c.Request.Context(), functionBody.Name, workloadId)
 	c.JSON(200, gin.H{
 		"message": "OK",
 	})
@@ -126,8 +137,8 @@ func (server *Server) invokeFunctionHandler(c *gin.Context) {
 	l.Debug("Invoke function")
 
 	// Check if the mapping between function and workload exist
-	workloadId, ok := server.functions[functionName]
-	if !ok {
+	workloadId, err := server.state.Get(c.Request.Context(), functionName)
+	if err != nil && err == state.ErrKeyNotFound {
 		l.Warn("Function not found")
 		c.JSON(404, gin.H{
 			"message": "Could not find the request resource",

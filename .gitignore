@@ -7,3 +7,4 @@ gateway
 *.ipr
 .vscode/
 morty-gateway
+controller.yaml
