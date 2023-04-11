@@ -39,7 +39,7 @@ func NewServer(config config.Config) (*Server, error) {
 
 	// When initializing the gateway we want to know existing functions in order to have a minimal state
 	// this is not perfect, but it will work as a MVP
-	functions, err := controllerClient.GetExistingFunctions()
+	functions, err := controllerClient.ListFunctions()
 	if err != nil {
 		l.WithError(err).Error("Could not load existing function, will start with an empty list")
 	}
@@ -69,6 +69,8 @@ func (server *Server) Run() {
 		})
 	})
 
+	router.GET("/functions", server.listFunctionsHandler)
+
 	// Handlers to create a FunctionRequest
 	router.POST("/functions", server.createFunctionHandler)
 
@@ -81,6 +83,16 @@ func (server *Server) Run() {
 		server.l.WithError(err).Error("Could not start server")
 		os.Exit(1)
 	}
+}
+
+func (server *Server) listFunctionsHandler(c *gin.Context) {
+
+	functions, err := server.ControllerClient.ListFunctions()
+	if err != nil {
+		return
+	}
+
+	c.JSON(200, functions)
 }
 
 func (server *Server) createFunctionHandler(c *gin.Context) {
