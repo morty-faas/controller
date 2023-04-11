@@ -16,7 +16,7 @@ type ControllerClient struct {
 	// c is the HTTP client used to communicate with the RIK controller
 	c *http.Client
 	// baseUrl is the base URL of the RIK controller
-	baseUrl *url.URL
+	baseUrl string
 	// l is the logger used to log messages
 	l *logrus.Entry
 }
@@ -25,13 +25,13 @@ func NewControllerClient(l *logrus.Entry, config config.Config) (*ControllerClie
 	client := &http.Client{}
 	return &ControllerClient{
 		c:       client,
-		baseUrl: config.RIKController,
+		baseUrl: config.Cluster,
 		l:       l.WithField("component", "rik-controller-client"),
 	}, nil
 }
 
 func (client ControllerClient) formatUrl(path string) (string, error) {
-	return url.JoinPath(client.baseUrl.String(), path)
+	return url.JoinPath(client.baseUrl, path)
 }
 
 func (client ControllerClient) mustFormatUrl(path string) string {

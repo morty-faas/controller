@@ -8,6 +8,7 @@ import (
 	"math/rand"
 	"net/http"
 	"net/http/httputil"
+	"net/url"
 	"os"
 	"strconv"
 	"time"
@@ -29,9 +30,7 @@ type Server struct {
 }
 
 func NewServer(config config.Config) (*Server, error) {
-	logger := logrus.New()
-	logger.SetLevel(logrus.DebugLevel)
-	l := logrus.NewEntry(logger)
+	l := logrus.NewEntry(&logrus.Logger{})
 	controllerClient, err := rik.NewControllerClient(l, config)
 	if err != nil {
 		return nil, err
@@ -178,7 +177,8 @@ func (server *Server) invokeFunctionHandler(c *gin.Context) {
 	// machine. Once RIK Controller will be able to dynamically return the worker node IP, we will need to
 	// update this line of code.
 	// See: https://github.com/polyxia-org/polyxia-org/issues/16
-	functionAddr := instance.GetRuntimeUrl(server.config.RIKController.Hostname())
+	url, _ := url.Parse(server.config.Cluster)
+	functionAddr := instance.GetRuntimeUrl(url.Hostname())
 
 	proxy := httputil.NewSingleHostReverseProxy(functionAddr)
 

@@ -3,35 +3,55 @@ package config
 import (
 	"net/url"
 
-	"github.com/spf13/pflag"
+	log "github.com/sirupsen/logrus"
+	"github.com/thomasgouveia/go-config"
 )
 
 type Config struct {
-	// Port is the listening port for the gateway server
-	Port uint16
-	// RIKController is the address of the RIK controller
-	RIKController *url.URL
+	// Port is the listening port for the Morty controller
+	Port int `yaml:"port"`
+	// Cluster is the address of the RIK Controller
+	Cluster string `yaml:"cluster"`
 }
 
-func NewConfig(flags *pflag.FlagSet) (Config, error) {
-	var config Config
+var loaderOptions = &config.Options[Config]{
+	Format: config.YAML,
 
-	port, err := flags.GetUint16("port")
+	// Environment variables lookup
+	EnvEnabled: true,
+	EnvPrefix:  "MORTY_CONTROLLER",
+
+	// Configuration file
+	FileName:      "controller",
+	FileLocations: []string{"/etc/morty", "$HOME/.morty", "."},
+
+	// Default configuration
+	Default: &Config{
+		Port:    8080,
+		Cluster: "http://localhost:5000",
+	},
+}
+
+// Load the configuration from the different sources (environment, files, default)
+func Load() (*Config, error) {
+	cl, err := config.NewLoader(loaderOptions)
 	if err != nil {
-		return config, err
+		return nil, err
 	}
-	config.Port = port
 
-	rikControllerStr, err := flags.GetString("controller")
+	cfg, err := cl.Load()
 	if err != nil {
-		return config, err
+		return nil, err
 	}
 
-	rikController, err := url.Parse(rikControllerStr)
-	if err != nil {
-		return config, err
-	}
-	config.RIKController = rikController
+	return cfg.validate()
+}
 
-	return config, nil
+// validate handles the configuration validation
+func (c *Config) validate() (*Config, error) {
+	log.Debugf("Loaded configuration: %+v", c)
+	if _, err := url.Parse(c.Cluster); err != nil {
+		return nil, err
+	}
+	return c, nil
 }
