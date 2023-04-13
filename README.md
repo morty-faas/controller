@@ -32,7 +32,11 @@ For development, you can create a configuration file `controller.yaml` at the ro
 
 ```yaml
 port: 8080
-cluster: http://localhost:5000
+
+orchestrator:
+    rik:
+        cluster: http://localhost:5000
+
 # state:
 #   redis:
 #     addr: localhost:6379
@@ -40,10 +44,10 @@ cluster: http://localhost:5000
 
 > Note that `state` stanza is commented. By default, the `memory` engine will be loaded by the application. Add the required configuration for the adapter you want to use. For example here, if you uncomment, the application will try to initialize a `redis` engine adapter using the given `addr`.
 
-If you wish to override a configuration through environment variables, for example `cluster`, export the following environment variable : 
+If you wish to override a configuration through environment variables, for example `orchestrator.rik.cluster`, export the following environment variable : 
 
 ```bash
-export MORTY_CONTROLLER_CLUSTER="mycustomaddr"
+export MORTY_CONTROLLER_ORCHESTRATOR_RIK_CLUSTER="mycustomaddr"
 ```
 
 Finally, the default log level is `INFO`. If you want to update it, export the following environmnent variable with the level you want : 

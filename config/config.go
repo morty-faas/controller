@@ -1,8 +1,8 @@
 package config
 
 import (
-	"net/url"
-
+	"github.com/polyxia-org/morty-gateway/orchestration"
+	"github.com/polyxia-org/morty-gateway/orchestration/rik"
 	"github.com/polyxia-org/morty-gateway/state"
 	"github.com/polyxia-org/morty-gateway/state/memory"
 	"github.com/polyxia-org/morty-gateway/state/redis"
@@ -12,11 +12,13 @@ import (
 
 type (
 	Config struct {
-		// Port is the listening port for the Morty controller
-		Port int `yaml:"port"`
-		// Cluster is the address of the RIK Controller
-		Cluster string `yaml:"cluster"`
-		State   State  `yaml:"state"`
+		Port         int          `yaml:"port"`
+		Orchestrator Orchestrator `yaml:"orchestrator"`
+		State        State        `yaml:"state"`
+	}
+
+	Orchestrator struct {
+		Rik rik.Config `yaml:"rik"`
 	}
 
 	State struct {
@@ -37,8 +39,12 @@ var loaderOptions = &config.Options[Config]{
 
 	// Default configuration
 	Default: &Config{
-		Port:    8080,
-		Cluster: "http://localhost:5000",
+		Port: 8080,
+		Orchestrator: Orchestrator{
+			Rik: rik.Config{
+				Cluster: "http://localhost:5000",
+			},
+		},
 	},
 }
 
@@ -54,7 +60,9 @@ func Load() (*Config, error) {
 		return nil, err
 	}
 
-	return cfg.validate()
+	log.Debugf("Loaded configuration: %+v", cfg)
+
+	return cfg, nil
 }
 
 // StateFactory initializes a new state implementation based on the configuration.
@@ -73,11 +81,8 @@ func (c *Config) StateFactory() (state.State, error) {
 	return memory.NewState(), nil
 }
 
-// validate handles the configuration validation
-func (c *Config) validate() (*Config, error) {
-	log.Debugf("Loaded configuration: %+v", c)
-	if _, err := url.Parse(c.Cluster); err != nil {
-		return nil, err
-	}
-	return c, nil
+// OrchestratorFactory initializes a new orchestrator implementation based on the configuration.
+func (c *Config) OrchestratorFactory() (orchestration.Orchestrator, error) {
+	log.Debugf("Applying orchestrator factory based on configuration")
+	return rik.NewOrchestrator(&c.Orchestrator.Rik)
 }

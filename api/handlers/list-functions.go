@@ -1,0 +1,21 @@
+package handlers
+
+import (
+	"net/http"
+
+	"github.com/gin-gonic/gin"
+	"github.com/polyxia-org/morty-gateway/orchestration"
+	"github.com/polyxia-org/morty-gateway/state"
+)
+
+func ListFunctionsHandler(s state.State, orch orchestration.Orchestrator) gin.HandlerFunc {
+	return func(c *gin.Context) {
+		functions, err := orch.GetFunctions(c.Request.Context())
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, makeApiError(err))
+			return
+		}
+
+		c.JSON(http.StatusOK, functions)
+	}
+}

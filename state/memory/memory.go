@@ -4,12 +4,13 @@ import (
 	"context"
 
 	"github.com/polyxia-org/morty-gateway/state"
+	"github.com/polyxia-org/morty-gateway/types"
 	log "github.com/sirupsen/logrus"
 )
 
 // adapter is an implementation of the state.State interface
 type adapter struct {
-	store map[string]string
+	store map[string]*types.Function
 }
 
 var _ state.State = (*adapter)(nil)
@@ -18,28 +19,28 @@ var _ state.State = (*adapter)(nil)
 func NewState() state.State {
 	log.Info("State engine 'memory' successfully initialized")
 	return &adapter{
-		store: make(map[string]string),
+		store: make(map[string]*types.Function),
 	}
 }
 
-func (a *adapter) Get(ctx context.Context, key string) (string, error) {
+func (a *adapter) Get(ctx context.Context, key string) (*types.Function, error) {
 	log.Tracef("state/memory: retrieving value for key '%s'", key)
 	v, exists := a.store[key]
 	if !exists {
-		return "", state.ErrKeyNotFound
+		return nil, state.ErrKeyNotFound
 	}
 	return v, nil
 }
 
-func (a *adapter) Set(ctx context.Context, key, value string) error {
-	log.Tracef("state/memory: setting value '%s' for key '%s'", key, value)
-	a.store[key] = value
+func (a *adapter) Set(ctx context.Context, fn *types.Function) error {
+	log.Tracef("state/memory: setting value '%+v' for key '%s'", fn.Id, fn)
+	a.store[fn.Name] = fn
 	return nil
 }
 
-func (a *adapter) SetMultiple(ctx context.Context, tuples map[string]string) []error {
-	for k, v := range tuples {
-		a.Set(ctx, k, v)
+func (a *adapter) SetMultiple(ctx context.Context, functions []*types.Function) []error {
+	for _, fn := range functions {
+		a.Set(ctx, fn)
 	}
 	return nil
 }

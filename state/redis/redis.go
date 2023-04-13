@@ -4,6 +4,7 @@ import (
 	"context"
 
 	"github.com/polyxia-org/morty-gateway/state"
+	"github.com/polyxia-org/morty-gateway/types"
 	"github.com/redis/go-redis/v9"
 	log "github.com/sirupsen/logrus"
 )
@@ -39,24 +40,39 @@ func NewState(cfg *Config) (state.State, error) {
 	return &adapter{client}, nil
 }
 
-func (a *adapter) Get(ctx context.Context, key string) (string, error) {
-	r := a.client.Get(ctx, key)
+func (a *adapter) Get(ctx context.Context, key string) (*types.Function, error) {
+	r := a.client.HGetAll(ctx, key)
 	log.Tracef("state/redis: %s", r.String())
-	return r.Result()
+
+	res, err := r.Result()
+	if err != nil {
+		return nil, err
+	}
+
+	if len(res) == 0 {
+		return nil, nil
+	}
+
+	fn := &types.Function{
+		Id:       res["id"],
+		Name:     key,
+		ImageURL: res["imageUrl"],
+	}
+
+	return fn, nil
 }
 
-func (a *adapter) Set(ctx context.Context, key, value string) error {
-	// 0 as the key doesn't expire at the moment
-	r := a.client.Set(ctx, key, value, 0)
+func (a *adapter) Set(ctx context.Context, fn *types.Function) error {
+	r := a.client.HSet(ctx, fn.Name, fn)
 	log.Tracef("state/redis: %s", r.String())
 	_, err := r.Result()
 	return err
 }
 
-func (a *adapter) SetMultiple(ctx context.Context, tuples map[string]string) []error {
+func (a *adapter) SetMultiple(ctx context.Context, functions []*types.Function) []error {
 	errors := []error{}
-	for k, v := range tuples {
-		if err := a.Set(ctx, k, v); err != nil {
+	for _, fn := range functions {
+		if err := a.Set(ctx, fn); err != nil {
 			errors = append(errors, err)
 		}
 	}

@@ -5,8 +5,8 @@ import (
 
 	log "github.com/sirupsen/logrus"
 
+	"github.com/polyxia-org/morty-gateway/api"
 	"github.com/polyxia-org/morty-gateway/config"
-	"github.com/polyxia-org/morty-gateway/server"
 )
 
 const (
@@ -33,10 +33,9 @@ func main() {
 		log.Fatal(err)
 	}
 
-	s, err := server.NewServer(cfg)
+	s, err := api.New(cfg)
 	if err != nil {
 		log.Fatal(err)
 	}
-
-	s.Run()
+	s.ListenAndServe()
 }
