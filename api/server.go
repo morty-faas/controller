@@ -65,7 +65,7 @@ func (s *server) ListenAndServe() {
 	// Wait for an interrupt signal
 	<-ctx.Done()
 
-	// Resotre default behavior on the interrupt signal and notify user of shutdown
+	// Restore default behavior on the interrupt signal and notify user of shutdown
 	stop()
 	logrus.Info("Commencing graceful shutdown, press Ctrl+C again to force exiting")
 

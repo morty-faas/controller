@@ -1,32 +1,30 @@
 package rik
 
 import (
-	"github.com/polyxia-org/morty-gateway/pkg/rik"
 	"github.com/polyxia-org/morty-gateway/types"
+	rik "github.com/rik-org/rik-go-client"
 )
 
 // mapRegisteredWorkloadToFn is a helper function that maps a RIK Workload to a Morty function
-func mapRegisteredWorkloadToFn(wk *rik.RegisteredWorkload) *types.Function {
+func mapRegisteredWorkloadToFn(wk *rik.GetWorkloadsResponseInner) *types.Function {
 	return &types.Function{
-		Id:       wk.WorkloadId,
-		Name:     wk.Name,
-		ImageURL: wk.Workload.Spec.Function.Executor.Rootfs,
+		Id:       wk.GetId(),
+		Name:     wk.GetName(),
+		ImageURL: *wk.GetValue().Spec.Function.Execution.Rootfs,
 	}
 }
 
 // mapFnToWorkload is a helper function that maps a Morty function to a RIK Workload
 func mapFnToWorkload(fn *types.Function) *rik.Workload {
+	apiVersion, kind := "v0", rik.KIND_FUNCTION
 	return &rik.Workload{
-		ApiVersion: "v0",
-		Kind:       rikFunctionKind,
-		Name:       fn.Name,
-		Spec: rik.Spec{
-			Function: rik.Fn{
-				Executor: rik.Executor{
-					Rootfs: fn.ImageURL,
-				},
-				Exposure: rik.Exposure{
-					Type: "NodePort",
+		ApiVersion: &apiVersion,
+		Kind:       &kind,
+		Name:       &fn.Name,
+		Spec: &rik.WorkloadSpec{
+			Function: &rik.Function{
+				Execution: &rik.FunctionExecution{
+					Rootfs: &fn.ImageURL,
 				},
 			},
 		},
