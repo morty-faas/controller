@@ -18,7 +18,8 @@ import (
 )
 
 var (
-	ErrFunctionNotFound = errors.New("function not found")
+	ErrFunctionNotFound              = errors.New("function not found")
+	ErrFunctionCantBeMarkedAsHealthy = errors.New("one or more instances of the function can't be marked as healthy")
 )
 
 func InvokeFunctionHandler(s state.State, orch orchestration.Orchestrator) gin.HandlerFunc {
@@ -58,10 +59,7 @@ func InvokeFunctionHandler(s state.State, orch orchestration.Orchestrator) gin.H
 			if _, err := http.Get(healthcheck); err != nil {
 				if i == maxHealthcheckRetries-1 {
 					log.Errorf("failed to perform healthcheck on Alpha: %v", err)
-					c.JSON(http.StatusServiceUnavailable, gin.H{
-						"status":  "OUT_OF_SERVICE",
-						"message": "One or more instances of the function can't be marked as ready",
-					})
+					c.JSON(http.StatusServiceUnavailable, makeApiError(ErrFunctionCantBeMarkedAsHealthy))
 					return
 				}
 				time.Sleep(1 * time.Second)

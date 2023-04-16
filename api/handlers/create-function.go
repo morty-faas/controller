@@ -12,8 +12,8 @@ import (
 )
 
 type createFnRequest struct {
-	Name   string `json:"name"`
-	Rootfs string `json:"rootfs"`
+	Name  string `json:"name"`
+	Image string `json:"image"`
 }
 
 var (
@@ -42,7 +42,7 @@ func CreateFunctionHandler(state state.State, orch orchestration.Orchestrator) g
 
 		fn := &types.Function{
 			Name:     data.Name,
-			ImageURL: data.Rootfs,
+			ImageURL: data.Image,
 		}
 
 		fn, err := orch.CreateFunction(ctx, fn)

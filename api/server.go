@@ -90,7 +90,7 @@ func (s *server) makeRouter() http.Handler {
 	// Functions
 	r.GET("/functions", handlers.ListFunctionsHandler(s.state, s.orch))
 	r.POST("/functions", handlers.CreateFunctionHandler(s.state, s.orch))
-	r.Any("/invoke/:name", handlers.InvokeFunctionHandler(s.state, s.orch))
+	r.Any("/functions/:name/invoke", handlers.InvokeFunctionHandler(s.state, s.orch))
 
 	return r
 }

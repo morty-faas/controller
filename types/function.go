@@ -6,7 +6,7 @@ type Function struct {
 	Id string `json:"id" redis:"id"`
 	// We don't want to serialize the name as a Redis HSET as we use the ID as the key
 	Name     string `json:"name" redis:"-"`
-	ImageURL string `json:"imageUrl" redis:"imageUrl"`
+	ImageURL string `json:"image" redis:"imageUrl"`
 }
 
 type FnInstance struct {
