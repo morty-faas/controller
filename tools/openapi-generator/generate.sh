@@ -21,6 +21,8 @@ openapi-generator generate -i "${SPEC_FILE}" \
     --git-host "${GH_HOST}" \
     -c ./tools/openapi-generator/config.yml
 
+cp ./tools/openapi-generator/README.md "${DEST}"
+
 rm "${DEST}/git_push.sh" || true
 rm "${DEST}/.travis.yml" || true
 rm -rf "${DEST}/test" || true
