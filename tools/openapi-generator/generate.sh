@@ -26,3 +26,5 @@ cp ./tools/openapi-generator/README.md "${DEST}"
 rm "${DEST}/git_push.sh" || true
 rm "${DEST}/.travis.yml" || true
 rm -rf "${DEST}/test" || true
+rm "${DEST}/go.mod" || true
+rm "${DEST}/go.sum" || true

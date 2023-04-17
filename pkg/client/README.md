@@ -10,10 +10,18 @@ Run the following command in your Go project to install the SDK :
 
 ```bash
 # Install the latest version
-go get github.com/polyxia-org/morty-gateway/pkg/client@latest
+go get github.com/polyxia-org/morty-gateway@latest
 
 # Pin a specific version
-go get github.com/polyxia-org/morty-gateway/pkg/client@v0.1.0
+go get github.com/polyxia-org/morty-gateway@v0.2.1
+```
+
+In your code, you can import the `pkg/client` package :
+
+```go
+import (
+    morty "github.com/polyxia-org/morty-gateway/pkg/client"
+)
 ```
 
 ## Generation
