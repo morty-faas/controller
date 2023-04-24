@@ -10,6 +10,7 @@ type Function struct {
 }
 
 type FnInstance struct {
+	Id       string    `json:"id"`
 	Function *Function `json:"function"`
 	Endpoint *url.URL  `json:"endpoint"`
 }

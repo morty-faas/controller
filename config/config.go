@@ -66,14 +66,14 @@ func Load() (*Config, error) {
 }
 
 // StateFactory initializes a new state implementation based on the configuration.
-func (c *Config) StateFactory() (state.State, error) {
+func (c *Config) StateFactory(expiryCallback state.FnExpiryCallback) (state.State, error) {
 	log.Debugf("Applying state factory based on configuration")
 	if err := ensureKeyHasSingleSubKey(c.State); err != nil {
 		return nil, err
 	}
 
 	if isDefined(c.State.Redis) {
-		return redis.NewState(&c.State.Redis)
+		return redis.NewState(&c.State.Redis, expiryCallback)
 	}
 
 	// By default, we will use a in memory state engine if no configuration

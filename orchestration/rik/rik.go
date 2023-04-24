@@ -106,6 +106,7 @@ func (a *adapter) GetFunctionInstance(ctx context.Context, fn *types.Function) (
 	url, _ = url.Parse(fmt.Sprintf("%s://%s:%d", url.Scheme, url.Hostname(), rikIn.Spec.Function.Exposure.GetPort()))
 
 	instance := &types.FnInstance{
+		Id:       rikIn.GetId(),
 		Function: fn,
 		Endpoint: url,
 	}
@@ -137,7 +138,6 @@ func (a *adapter) getWorkloadInstances(ctx context.Context, id string) ([]rik.In
 // createWorkloadInstance is a helper function to create a workload instance
 func (a *adapter) createWorkloadInstance(ctx context.Context, workloadId, name string) error {
 	in := rik.CreateInstanceRequest{
-		Name:       name,
 		WorkloadId: workloadId,
 	}
 
@@ -152,4 +152,13 @@ func (a *adapter) createWorkloadInstance(ctx context.Context, workloadId, name s
 	}
 
 	return nil
+}
+
+func (a *adapter) DeleteFunctionInstance(ctx context.Context, fn *types.Function) error {
+	input := rik.DeleteInstanceRequest{
+		Id: &fn.Name,
+	}
+
+	_, err := a.client.InstancesApi.DeleteInstance(ctx).DeleteInstanceRequest(input).Execute()
+	return err
 }

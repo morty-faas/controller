@@ -2,6 +2,8 @@ package memory
 
 import (
 	"context"
+	"errors"
+	"time"
 
 	"github.com/polyxia-org/morty-gateway/state"
 	"github.com/polyxia-org/morty-gateway/types"
@@ -43,4 +45,8 @@ func (a *adapter) SetMultiple(ctx context.Context, functions []*types.Function) 
 		a.Set(ctx, fn)
 	}
 	return nil
+}
+
+func (a *adapter) SetWithExpiry(ctx context.Context, key string, expiry time.Duration) error {
+	return errors.New("not supported")
 }

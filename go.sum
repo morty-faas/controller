@@ -186,8 +186,8 @@ github.com/pmezard/go-difflib v1.0.0/go.mod h1:iKH77koFhYxTK1pcRnkKkqfTogsbg7gZN
 github.com/prometheus/client_model v0.0.0-20190812154241-14fe0d1b01d4/go.mod h1:xMI15A0UPsDsEKsMN9yxemIoYk6Tm2C1GtYGdfGttqA=
 github.com/redis/go-redis/v9 v9.0.3 h1:+7mmR26M0IvyLxGZUHxu4GiBkJkVDid0Un+j4ScYu4k=
 github.com/redis/go-redis/v9 v9.0.3/go.mod h1:WqMKv5vnQbRuZstUwxQI195wHy+t4PuXDOjzMvcuQHk=
-github.com/rik-org/rik-go-client v0.1.3 h1:Ji5eedOvwzK8nKLnYz2GRjb13X4Qz11QLUesDsQnKQI=
-github.com/rik-org/rik-go-client v0.1.3/go.mod h1:7EhBAgTNZ72AlNfKR4E+AzWtVP6uzRyoz1+aE09Z6aM=
+github.com/rik-org/rik-go-client v0.1.4 h1:DieQNgnbWVKkc8C6IkO6T/bZG+Zm2XOiXqCTqLpJx3w=
+github.com/rik-org/rik-go-client v0.1.4/go.mod h1:7EhBAgTNZ72AlNfKR4E+AzWtVP6uzRyoz1+aE09Z6aM=
 github.com/rogpeppe/go-internal v1.3.0/go.mod h1:M8bDsm7K2OlrFYOpmOWEs/qY81heoFRclV5y23lUDJ4=
 github.com/rogpeppe/go-internal v1.8.0 h1:FCbCCtXNOY3UtUuHUYaghJg4y7Fd14rXifAYUAtL9R8=
 github.com/sirupsen/logrus v1.9.0 h1:trlNQbNUG3OdDrDil03MCb1H2o9nJ1x4/5LYw7byDE0=

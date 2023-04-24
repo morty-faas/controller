@@ -2,6 +2,7 @@ package redis
 
 import (
 	"context"
+	"time"
 
 	"github.com/polyxia-org/morty-gateway/state"
 	"github.com/polyxia-org/morty-gateway/types"
@@ -23,7 +24,7 @@ var _ state.State = (*adapter)(nil)
 
 // NewState initializes a new state adapter for Redis based on the given configuration.
 // An error could be returned if any errors happens during the adapter initialization.
-func NewState(cfg *Config) (state.State, error) {
+func NewState(cfg *Config, expiryCallback state.FnExpiryCallback) (state.State, error) {
 	log.Debugf("Bootstrapping Redis state adapter with options: %#v", cfg)
 	client := redis.NewClient(&redis.Options{
 		Addr: cfg.Addr,
@@ -35,6 +36,21 @@ func NewState(cfg *Config) (state.State, error) {
 		log.Errorf("Failed to enable Redis Keyspace Events: %v", err)
 		return nil, err
 	}
+
+	// this is telling redis to subscribe to events published in the keyevent channel, specifically for expired events
+	pubsub := client.PSubscribe(context.Background(), "__keyevent@0__:expired")
+
+	go func(redis.PubSub) {
+		for {
+			message, err := pubsub.ReceiveMessage(context.Background())
+			if err != nil {
+				log.Errorf("failed to receive expiry event: %v", err)
+				continue
+			}
+			log.Tracef("Key %s has expired", message.Payload)
+			expiryCallback(message.Payload)
+		}
+	}(*pubsub)
 
 	log.Info("State engine 'redis' successfully initialized")
 	return &adapter{client}, nil
@@ -77,4 +93,11 @@ func (a *adapter) SetMultiple(ctx context.Context, functions []*types.Function) 
 		}
 	}
 	return errors
+}
+
+func (a *adapter) SetWithExpiry(ctx context.Context, key string, expiry time.Duration) error {
+	log.Debugf("Set expiration of %v for key %s", expiry, key)
+
+	_, err := a.client.Set(ctx, key, "", expiry).Result()
+	return err
 }
