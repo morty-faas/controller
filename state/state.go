@@ -3,6 +3,7 @@ package state
 import (
 	"context"
 	"errors"
+	"time"
 
 	"github.com/polyxia-org/morty-gateway/types"
 )
@@ -10,6 +11,8 @@ import (
 var (
 	ErrKeyNotFound = errors.New("key not found")
 )
+
+type FnExpiryCallback func(string)
 
 // State is a generic interface for our controller state
 type State interface {
@@ -20,4 +23,6 @@ type State interface {
 	Set(ctx context.Context, fn *types.Function) error
 	// SetMultiple set multiple keys in one call
 	SetMultiple(ctx context.Context, functions []*types.Function) []error
+
+	SetWithExpiry(ctx context.Context, key string, expiry time.Duration) error
 }

@@ -5,7 +5,7 @@ go 1.19
 require (
 	github.com/gin-gonic/gin v1.9.0
 	github.com/redis/go-redis/v9 v9.0.3
-	github.com/rik-org/rik-go-client v0.1.3
+	github.com/rik-org/rik-go-client v0.1.4
 	github.com/sirupsen/logrus v1.9.0
 	github.com/thomasgouveia/go-config v1.0.0
 )

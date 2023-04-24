@@ -3,7 +3,6 @@ package api
 import (
 	"context"
 	"fmt"
-	"log"
 	"net/http"
 	"os/signal"
 	"syscall"
@@ -14,7 +13,9 @@ import (
 	"github.com/polyxia-org/morty-gateway/config"
 	"github.com/polyxia-org/morty-gateway/orchestration"
 	"github.com/polyxia-org/morty-gateway/state"
+	"github.com/polyxia-org/morty-gateway/types"
 	"github.com/sirupsen/logrus"
+	log "github.com/sirupsen/logrus"
 )
 
 type server struct {
@@ -26,12 +27,16 @@ type server struct {
 // New initializes a new API server.
 // The method will return an error if the bootstrap process encounters one.
 func New(cfg *config.Config) (*server, error) {
-	state, err := cfg.StateFactory()
+	orch, err := cfg.OrchestratorFactory()
 	if err != nil {
 		return nil, err
 	}
 
-	orch, err := cfg.OrchestratorFactory()
+	state, err := cfg.StateFactory(func(functionName string) {
+		if err := orch.DeleteFunctionInstance(context.Background(), &types.Function{Name: functionName}); err != nil {
+			log.Errorf("Failed to automatically delete instance for function %s: %v", functionName, err)
+		}
+	})
 	if err != nil {
 		return nil, err
 	}

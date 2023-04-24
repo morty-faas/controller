@@ -34,6 +34,7 @@ func InvokeFunctionHandler(s state.State, orch orchestration.Orchestrator) gin.H
 			c.JSON(http.StatusInternalServerError, makeApiError(err))
 			return
 		}
+
 		if fn == nil {
 			c.JSON(http.StatusNotFound, makeApiError(ErrFunctionNotFound))
 			return
@@ -67,6 +68,13 @@ func InvokeFunctionHandler(s state.State, orch orchestration.Orchestrator) gin.H
 			}
 			log.Infof("Function '%s' is healthy and ready to receive requests", fnName)
 			break
+		}
+
+		// Each invocation warn up function for 15 minutes
+		if err := s.SetWithExpiry(ctx, instance.Id, 15*time.Minute); err != nil {
+			log.Error(err)
+			c.JSON(http.StatusInternalServerError, makeApiError(err))
+			return
 		}
 
 		proxy.ServeHTTP(c.Writer, c.Request)
