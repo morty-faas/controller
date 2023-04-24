@@ -9,8 +9,8 @@ import (
 	"net/url"
 	"time"
 
-	"github.com/polyxia-org/morty-gateway/orchestration"
-	"github.com/polyxia-org/morty-gateway/types"
+	"github.com/morty-faas/controller/orchestration"
+	"github.com/morty-faas/controller/types"
 	rik "github.com/rik-org/rik-go-client"
 	log "github.com/sirupsen/logrus"
 )

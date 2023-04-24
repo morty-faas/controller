@@ -1,7 +1,7 @@
 /*
 Morty APIs
 
-This document contains the specification of the public-facing Morty APIs. For function invocation, please see the project README here: https://github.com/polyxia-org/morty-gateway#readme 
+This document contains the specification of the public-facing Morty APIs. For function invocation, please see the project README here: https://github.com/morty-faas/controller#readme 
 
 API version: 0.1.1
 */

@@ -1,21 +1,17 @@
 # \FunctionApi
 
-All URIs are relative to *http://localhost*
+All URIs are relative to _http://localhost_
 
-Method | HTTP request | Description
-------------- | ------------- | -------------
-[**CreateFunction**](FunctionApi.md#CreateFunction) | **Post** /functions | Create a new function
-[**GetFunctions**](FunctionApi.md#GetFunctions) | **Get** /functions | Get a list of the available functions
-
-
+| Method                                              | HTTP request        | Description                           |
+| --------------------------------------------------- | ------------------- | ------------------------------------- |
+| [**CreateFunction**](FunctionApi.md#CreateFunction) | **Post** /functions | Create a new function                 |
+| [**GetFunctions**](FunctionApi.md#GetFunctions)     | **Get** /functions  | Get a list of the available functions |
 
 ## CreateFunction
 
 > Function CreateFunction(ctx).CreateFunctionRequest(createFunctionRequest).Execute()
 
 Create a new function
-
-
 
 ### Example
 
@@ -26,11 +22,11 @@ import (
     "context"
     "fmt"
     "os"
-    openapiclient "github.com/polyxia-org/morty-gateway/pkg/client"
+    openapiclient "github.com/morty-faas/controller/pkg/client"
 )
 
 func main() {
-    createFunctionRequest := *openapiclient.NewCreateFunctionRequest() // CreateFunctionRequest | 
+    createFunctionRequest := *openapiclient.NewCreateFunctionRequest() // CreateFunctionRequest |
 
     configuration := openapiclient.NewConfiguration()
     apiClient := openapiclient.NewAPIClient(configuration)
@@ -46,16 +42,13 @@ func main() {
 
 ### Path Parameters
 
-
-
 ### Other Parameters
 
 Other parameters are passed through a pointer to a apiCreateFunctionRequest struct via the builder pattern
 
-
-Name | Type | Description  | Notes
-------------- | ------------- | ------------- | -------------
- **createFunctionRequest** | [**CreateFunctionRequest**](CreateFunctionRequest.md) |  | 
+| Name                      | Type                                                  | Description | Notes |
+| ------------------------- | ----------------------------------------------------- | ----------- | ----- |
+| **createFunctionRequest** | [**CreateFunctionRequest**](CreateFunctionRequest.md) |             |
 
 ### Return type
 
@@ -74,14 +67,11 @@ No authorization required
 [[Back to Model list]](../README.md#documentation-for-models)
 [[Back to README]](../README.md)
 
-
 ## GetFunctions
 
 > []Function GetFunctions(ctx).Execute()
 
 Get a list of the available functions
-
-
 
 ### Example
 
@@ -92,7 +82,7 @@ import (
     "context"
     "fmt"
     "os"
-    openapiclient "github.com/polyxia-org/morty-gateway/pkg/client"
+    openapiclient "github.com/morty-faas/controller/pkg/client"
 )
 
 func main() {
@@ -117,7 +107,6 @@ This endpoint does not need any parameter.
 
 Other parameters are passed through a pointer to a apiGetFunctionsRequest struct via the builder pattern
 
-
 ### Return type
 
 [**[]Function**](Function.md)
@@ -134,4 +123,3 @@ No authorization required
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints)
 [[Back to Model list]](../README.md#documentation-for-models)
 [[Back to README]](../README.md)
-

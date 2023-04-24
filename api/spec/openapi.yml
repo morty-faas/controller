@@ -2,7 +2,7 @@ openapi: 3.0.0
 info:
   title: Morty APIs
   description: |
-    This document contains the specification of the public-facing Morty APIs. For function invocation, please see the project README here: https://github.com/polyxia-org/morty-gateway#readme
+    This document contains the specification of the public-facing Morty APIs. For function invocation, please see the project README here: https://github.com/morty-faas/controller#readme
   version: 0.1.1
 paths:
   /functions:
@@ -61,48 +61,48 @@ paths:
               schema:
                 $ref: '#/components/schemas/Error'
 components:
-    schemas:
-      GetFunctionResponse:
-        type: array
-        items:
-          $ref: '#/components/schemas/Function'
-
-      CreateFunctionRequest:
-        type: object
-        properties:
-          name:
-            type: string
-          image:
-            type: string
-
-      CreateFunctionResponse:
+  schemas:
+    GetFunctionResponse:
+      type: array
+      items:
         $ref: '#/components/schemas/Function'
 
-      UUID:
-        type: string
-        example: "b53b71e0-2633-4a15-8435-8e6c56f66b9d"
-        description: The identifier of the resource
+    CreateFunctionRequest:
+      type: object
+      properties:
+        name:
+          type: string
+        image:
+          type: string
 
-      Function:
-        type: object
-        required:
-          - "name"
-          - "image"
-        properties:
-          id:
-            $ref: '#/components/schemas/UUID'
-          name:
-            description: A unique name to your function
-            example: weatho
-            type: string
-          image:
-            description: The URL of the function image
-            type: string
+    CreateFunctionResponse:
+      $ref: '#/components/schemas/Function'
 
-      Error:
-        type: object
-        properties:
-          message:
-            example: Some error message
-            description: Descriptive message of your error
-            type: string
+    UUID:
+      type: string
+      example: 'b53b71e0-2633-4a15-8435-8e6c56f66b9d'
+      description: The identifier of the resource
+
+    Function:
+      type: object
+      required:
+        - 'name'
+        - 'image'
+      properties:
+        id:
+          $ref: '#/components/schemas/UUID'
+        name:
+          description: A unique name to your function
+          example: weatho
+          type: string
+        image:
+          description: The URL of the function image
+          type: string
+
+    Error:
+      type: object
+      properties:
+        message:
+          example: Some error message
+          description: Descriptive message of your error
+          type: string

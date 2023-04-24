@@ -1,11 +1,11 @@
 package config
 
 import (
-	"github.com/polyxia-org/morty-gateway/orchestration"
-	"github.com/polyxia-org/morty-gateway/orchestration/rik"
-	"github.com/polyxia-org/morty-gateway/state"
-	"github.com/polyxia-org/morty-gateway/state/memory"
-	"github.com/polyxia-org/morty-gateway/state/redis"
+	"github.com/morty-faas/controller/orchestration"
+	"github.com/morty-faas/controller/orchestration/rik"
+	"github.com/morty-faas/controller/state"
+	"github.com/morty-faas/controller/state/memory"
+	"github.com/morty-faas/controller/state/redis"
 	log "github.com/sirupsen/logrus"
 	"github.com/thomasgouveia/go-config"
 )

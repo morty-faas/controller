@@ -5,8 +5,8 @@ import (
 
 	log "github.com/sirupsen/logrus"
 
-	"github.com/polyxia-org/morty-gateway/api"
-	"github.com/polyxia-org/morty-gateway/config"
+	"github.com/morty-faas/controller/api"
+	"github.com/morty-faas/controller/config"
 )
 
 const (

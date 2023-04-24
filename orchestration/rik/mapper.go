@@ -1,7 +1,7 @@
 package rik
 
 import (
-	"github.com/polyxia-org/morty-gateway/types"
+	"github.com/morty-faas/controller/types"
 	rik "github.com/rik-org/rik-go-client"
 )
 

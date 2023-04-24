@@ -1,24 +1,24 @@
 openapi: 3.0.0
 info:
   description: |
-    This document contains the specification of the public-facing Morty APIs. For function invocation, please see the project README here: https://github.com/polyxia-org/morty-gateway#readme
+    This document contains the specification of the public-facing Morty APIs. For function invocation, please see the project README here: https://github.com/morty-faas/controller#readme
   title: Morty APIs
   version: 0.1.1
 servers:
-- url: /
+  - url: /
 paths:
   /functions:
     get:
       description: Get a list of the available functions
       operationId: getFunctions
       responses:
-        "200":
+        '200':
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/GetFunctionResponse'
           description: The list of the available functions
-        "500":
+        '500':
           content:
             application/json:
               schema:
@@ -26,7 +26,7 @@ paths:
           description: An internal server error occured. Check the logs for more details
       summary: Get a list of the available functions
       tags:
-      - Function
+        - Function
     post:
       description: Create a new function in the system to be able to invoke it later.
       operationId: createFunction
@@ -37,25 +37,25 @@ paths:
               $ref: '#/components/schemas/CreateFunctionRequest'
         required: true
       responses:
-        "200":
+        '200':
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/CreateFunctionResponse'
           description: OK
-        "400":
+        '400':
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
           description: The request body is invalid
-        "409":
+        '409':
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
           description: A function already exists with the same name
-        "500":
+        '500':
           content:
             application/json:
               schema:
@@ -63,7 +63,7 @@ paths:
           description: An internal server error occured. Check the logs for more details
       summary: Create a new function
       tags:
-      - Function
+        - Function
 components:
   schemas:
     GetFunctionResponse:
@@ -104,8 +104,8 @@ components:
           description: The URL of the function image
           type: string
       required:
-      - image
-      - name
+        - image
+        - name
       type: object
     Error:
       properties:

@@ -5,8 +5,8 @@ import (
 	"errors"
 	"time"
 
-	"github.com/polyxia-org/morty-gateway/state"
-	"github.com/polyxia-org/morty-gateway/types"
+	"github.com/morty-faas/controller/state"
+	"github.com/morty-faas/controller/types"
 	log "github.com/sirupsen/logrus"
 )
 

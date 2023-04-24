@@ -5,9 +5,9 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
-	"github.com/polyxia-org/morty-gateway/orchestration"
-	"github.com/polyxia-org/morty-gateway/state"
-	"github.com/polyxia-org/morty-gateway/types"
+	"github.com/morty-faas/controller/orchestration"
+	"github.com/morty-faas/controller/state"
+	"github.com/morty-faas/controller/types"
 	"github.com/sirupsen/logrus"
 )
 

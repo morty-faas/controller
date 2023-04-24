@@ -3,7 +3,7 @@ package orchestration
 import (
 	"context"
 
-	"github.com/polyxia-org/morty-gateway/types"
+	"github.com/morty-faas/controller/types"
 )
 
 type Orchestrator interface {

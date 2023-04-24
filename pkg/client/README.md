@@ -10,17 +10,17 @@ Run the following command in your Go project to install the SDK :
 
 ```bash
 # Install the latest version
-go get github.com/polyxia-org/morty-gateway@latest
+go get github.com/morty-faas/controller@latest
 
 # Pin a specific version
-go get github.com/polyxia-org/morty-gateway@v0.2.1
+go get github.com/morty-faas/controller@v0.2.1
 ```
 
 In your code, you can import the `pkg/client` package :
 
 ```go
 import (
-    morty "github.com/polyxia-org/morty-gateway/pkg/client"
+    morty "github.com/morty-faas/controller/pkg/client"
 )
 ```
 
@@ -30,4 +30,4 @@ This code base, including this README, is auto-generated using
 [OpenAPI Generator](https://openapi-generator.tech). If you find bugs in the SDK
 please check if there is an open issue at
 [OpenAPITools/openapi-generator](https://github.com/OpenAPITools/openapi-generator)
-or [polyxia-org/morty-gateway](https://github.com/polyxia-org/morty-gateway) already before opening an issue here.
+or [morty-faas/controller](https://github.com/morty-faas/controller) already before opening an issue here.

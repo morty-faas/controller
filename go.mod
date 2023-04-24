@@ -1,4 +1,4 @@
-module github.com/polyxia-org/morty-gateway
+module github.com/morty-faas/controller
 
 go 1.19
 

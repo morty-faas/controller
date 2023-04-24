@@ -4,7 +4,7 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
-	"github.com/polyxia-org/morty-gateway/state"
+	"github.com/morty-faas/controller/state"
 )
 
 type healthcheckResponse struct {

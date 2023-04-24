@@ -4,8 +4,8 @@ import (
 	"context"
 	"time"
 
-	"github.com/polyxia-org/morty-gateway/state"
-	"github.com/polyxia-org/morty-gateway/types"
+	"github.com/morty-faas/controller/state"
+	"github.com/morty-faas/controller/types"
 	"github.com/redis/go-redis/v9"
 	log "github.com/sirupsen/logrus"
 )

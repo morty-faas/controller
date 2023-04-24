@@ -5,7 +5,7 @@ import (
 	"errors"
 	"time"
 
-	"github.com/polyxia-org/morty-gateway/types"
+	"github.com/morty-faas/controller/types"
 )
 
 var (
