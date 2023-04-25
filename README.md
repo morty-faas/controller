@@ -5,7 +5,7 @@ This repository contains the source code of the Morty controller.
 ## Prerequisites
 
 - [Golang](https://go.dev/doc/install) (`>1.19`)
-- [RIK](https://github.com/polyxia-org/rik) (`>0.1.0`)
+- [RIK](https://github.com/rik-org/rik) (`>1.0.0`)
 
 ## Getting started
 
