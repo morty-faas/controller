@@ -5,9 +5,9 @@ set -Eeuo pipefail
 DEST="pkg/client"
 SPEC_FILE="./api/spec/openapi.yml"
 
-GH_ORG="polyxia-org"
+GH_ORG="morty-faas"
 GH_HOST="github.com"
-GH_REPO="morty-gateway/pkg/client"
+GH_REPO="controller/pkg/client"
 
 rm -rf "${DEST}" || true
 mkdir -p "${DEST}"
