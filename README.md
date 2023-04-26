@@ -1,3 +1,5 @@
+# ⚠️ The upkeep of this project has ceased and it has been relocated to [morty-faas/morty](https://github.com/morty-faas/morty). ⚠️
+
 # Morty Controller
 
 This repository contains the source code of the Morty controller.
